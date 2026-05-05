@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>เครื่องมือ สื่อการสอนเพื่อ(น)ครู (v35.1 Stable)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root{
+      --primary:#4f46e5;
+      --primary-gradient:linear-gradient(135deg,#4f46e5 0%,#8b5cf6 50%,#ec4899 100%);
+      --bg-color:#f8fafc;
+      --panel-bg:#ffffff;
+      --text-main:#1e293b;
+      --text-muted:#64748b;
+      --border:#cbd5e1;
+      --header-height:80px;
+    }
+    *{box-sizing:border-box}
+    body{
+  font-family:'Sarabun',sans-serif;
+  background-color:var(--bg-color);
+  color:var(--text-main);
+  margin:0;padding:0;
+
+  height:100vh;          /* ✅ ใช้ height แทน min-height */
+  overflow:hidden;       /* ✅ ห้ามเลื่อนทั้งหน้า */
+  display:flex;
+  flex-direction:column;
+}
+
+
+    header{
+      min-height:150px;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.05), rgba(0,0,0,0.15)),
+        url("https://img1.pic.in.th/images/--1d030d5e05ac20226.png");
+      background-size:cover;
+      background-position:center;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      gap:14px;
+      padding:24px 25px;
+      box-shadow:0 8px 30px rgba(0,0,0,0.35);
+      flex-shrink:0;
+      z-index:10;
+      color:#fff;
+      position:relative;
+      overflow:hidden;
+    }
+    header{
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    @media (max-width: 768px){
+      header{
+        min-height:240px;
+        background-size:cover;
+        background-position:center;
+      }
+    }
+
+    header::after{
+      content:'';
+      position:absolute;
+      inset:0;
+      background-image:
+        radial-gradient(circle at 20% 150%, rgba(255,255,255,0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% -50%, rgba(255,255,255,0.2) 0%, transparent 50%);
+      animation:pulse 10s ease-in-out infinite alternate;
+      pointer-events:none;
+    }
+    @keyframes pulse{0%{opacity:.6}100%{opacity:1}}
+
+    .brand{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      color:#fff;
+      text-align:center;
+      text-shadow:0 2px 6px rgba(0,0,0,0.35);
+    }
+    .brand-title{font-size:1.9rem;font-weight:700;line-height:1.2;}
+    .brand-sub{font-size:1rem;font-weight:400;opacity:0.9;}
+
+    .brand-logo{
+      width:96px;height:auto;margin-bottom:6px;
+      filter:
+        drop-shadow(0 10px 22px rgba(255,255,255,0.45))
+        drop-shadow(0 0 26px rgba(139,92,246,0.45));
+      animation:logoFloat 4s ease-in-out infinite;
+    }
+    @keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    @media (max-width:768px){ .brand-logo{width:78px;} }
+
+    .header-controls{
+      display:flex;gap:10px;align-items:center;position:relative;z-index:2;flex-wrap:wrap;
+    }
+    .btn-pill{
+      background:rgba(255,255,255,0.25);
+      border:1px solid rgba(255,255,255,0.5);
+      color:#fff;
+      padding:10px 16px;
+      border-radius:25px;
+      font-size:.95rem;
+      cursor:pointer;
+      transition:.3s;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      backdrop-filter:blur(5px);
+      font-weight:600;
+      user-select:none;
+    }
+    .btn-pill:hover{background:rgba(255,255,255,0.4);transform:scale(1.05)}
+    .btn-pill.danger{background:rgba(255,255,255,0.18)}
+    .btn-pill.danger:hover{background:rgba(255,255,255,0.35)}
+
+    .main-canvas{display:flex;flex:1;overflow:hidden;padding:20px;gap:20px;}
+    .control-panel{
+      width:450px;background:var(--panel-bg);
+      border-radius:20px;border:1px solid var(--border);
+      display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;
+      box-shadow:0 10px 30px -10px rgba(0,0,0,0.08);
+    }
+    .scroll-area{flex:1;overflow-y:auto;padding:25px;}
+    .scroll-area::-webkit-scrollbar{width:6px}
+    .scroll-area::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+
+    .section-title{
+      font-size:1rem;font-weight:700;color:#4338ca;
+      margin:25px 0 12px;display:flex;align-items:center;gap:8px;
+      background:#e0e7ff;padding:10px 15px;border-radius:10px;letter-spacing:.5px;
+    }
+    .section-title:first-child{margin-top:0}
+
+    .form-group{margin-bottom:18px}
+    label{display:block;font-size:.95rem;font-weight:600;margin-bottom:8px;color:var(--text-main)}
+    .hint{font-size:.8rem;color:#6366f1;font-weight:400;margin-left:5px}
+
+    select,textarea,input[type="text"]{
+      width:100%;padding:12px 15px;border:2px solid var(--border);
+      border-radius:12px;font-family:'Sarabun',sans-serif;font-size:1rem;background:#fff;
+      transition:all .2s cubic-bezier(.4,0,.2,1);
+    }
+    select:hover,textarea:hover,input:hover{border-color:#94a3b8}
+    select:focus,textarea:focus,input:focus{
+      border-color:#6366f1;outline:none;
+      box-shadow:0 0 0 4px rgba(99,102,241,0.15);
+      transform:translateY(-1px);
+    }
+    textarea{height:130px;resize:vertical}
+
+    .magic-toggle{
+      display:flex;align-items:center;gap:12px;
+      background:linear-gradient(to right,#f5f3ff,#ede9fe);
+      padding:12px 15px;border-radius:12px;border:1px solid #ddd6fe;
+      margin-bottom:15px;cursor:pointer;transition:.2s;user-select:none;
+    }
+    .magic-toggle:hover{border-color:#c4b5fd;background:#ede9fe}
+    .magic-toggle input{margin:0;width:20px;height:20px;cursor:pointer;accent-color:#7c3aed}
+    .magic-label{font-size:.95rem;font-weight:600;color:#7c3aed;display:flex;align-items:center;gap:6px}
+
+    .content-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+    .btn-mini{
+      border:1px solid #c7d2fe;background:#eef2ff;color:#4338ca;
+      padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:800;
+      font-family:'Sarabun',sans-serif;display:inline-flex;gap:8px;align-items:center;
+      transition:.2s;user-select:none;
+    }
+    .btn-mini:hover{transform:translateY(-1px);background:#e0e7ff}
+    .btn-mini:active{transform:translateY(0)}
+
+    .hint-box{
+      margin-top:10px;padding:12px 14px;border-radius:12px;
+      border:1px dashed #c7d2fe;background:#f8fafc;color:#334155;
+      font-size:.92rem;line-height:1.55;white-space:pre-wrap;word-break:break-word;
+    }
+    .hint-box b{color:#0f172a}
+
+    .preview-panel{
+      flex:1;background:#0f172a;border-radius:20px;display:flex;flex-direction:column;
+      overflow:hidden;position:relative;
+      box-shadow:0 20px 40px -10px rgba(0,0,0,0.3);
+      border:1px solid #334155;
+    }
+
+    .preview-header{
+      padding:18px 30px;background:#1e293b;border-bottom:1px solid #334155;
+      display:flex;justify-content:space-between;align-items:center;color:#fff;font-weight:600;flex-shrink:0;
+    }
+
+    .badge{
+      font-size:.85rem;padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(226,232,240,0.2);
+      background:rgba(226,232,240,0.08);
+      color:#e2e8f0;
+    }
+    .badge.ok{background:rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.35)}
+    .badge.idle{background:rgba(148,163,184,0.10);border-color:rgba(148,163,184,0.25)}
+
+    .prompt-display-area{
+      flex:1;padding:30px;overflow-y:auto;color:#e2e8f0;
+      font-family:'Courier New',monospace;font-size:1.08rem;line-height:1.8;
+      white-space:pre-wrap;
+      background-image:radial-gradient(#334155 1px,transparent 1px);
+      background-size:20px 20px;
+    }
+
+    .placeholder{
+      color:#64748b;font-style:italic;text-align:center;margin-top:12%;
+      display:flex;flex-direction:column;align-items:center;gap:16px;
+      opacity:.85;font-family:'Sarabun',sans-serif;
+    }
+    .placeholder-icon{
+      font-size:4rem;background:-webkit-linear-gradient(#818cf8,#c084fc);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      animation:float 3s ease-in-out infinite;
+    }
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+    .action-bar{padding:20px 30px;background:#1e293b;border-top:1px solid #334155;flex-shrink:0}
+    .btn{
+      width:100%;border:none;padding:16px;border-radius:14px;font-family:'Sarabun',sans-serif;
+      font-weight:700;font-size:1.1rem;cursor:pointer;transition:.3s;
+      display:flex;align-items:center;justify-content:center;gap:12px;
+      background:var(--primary-gradient);color:#fff;
+      box-shadow:0 4px 15px rgba(99,102,241,0.4);
+    }
+    .btn:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(99,102,241,0.5);filter:brightness(1.1)}
+    .btn:active{transform:translateY(0)}
+
+    #toast{
+      visibility:hidden;min-width:250px;background:#10b981;color:#fff;text-align:center;
+      border-radius:50px;padding:14px 25px;position:fixed;z-index:100;
+      bottom:40px;left:50%;transform:translateX(-50%);
+      box-shadow:0 10px 25px rgba(0,0,0,0.2);
+      font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;
+      font-size:1rem;
+    }
+    #toast.show{visibility:visible;animation:fadein .5s,fadeout .5s 2.5s}
+    @keyframes fadein{from{bottom:0;opacity:0}to{bottom:40px;opacity:1}}
+    @keyframes fadeout{from{bottom:40px;opacity:1}to{bottom:0;opacity:0}}
+
+    /* Copy Modal (fallback when clipboard is blocked) */
+    #copyModal{
+      position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:20px;
+    }
+    #copyModal .modal-backdrop{
+      position:absolute;inset:0;background:rgba(15,23,42,0.72);backdrop-filter:blur(3px);
+    }
+    #copyModal .modal-card{
+      position:relative;width:min(780px, 100%);
+      background:#ffffff;border-radius:16px;border:1px solid #e2e8f0;
+      box-shadow:0 20px 60px rgba(0,0,0,0.35);overflow:hidden;
+    }
+    #copyModal .modal-head{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:14px 16px;background:#f8fafc;border-bottom:1px solid #e2e8f0;
+      font-weight:800;color:#0f172a;
+    }
+    #copyModal .modal-x{
+      border:none;background:transparent;cursor:pointer;font-size:18px;
+      padding:8px 10px;border-radius:10px;color:#0f172a;
+    }
+    #copyModal .modal-x:hover{ background:#e2e8f0; }
+    #copyModal .modal-body{ padding:14px 16px 16px; }
+    #copyModal .modal-note{ color:#475569; margin-bottom:10px; font-size:.92rem; line-height:1.45; }
+    #copyTextarea{
+      width:100%;min-height:240px;resize:vertical;padding:12px 14px;
+      border:2px solid #cbd5e1;border-radius:12px;font-family:'Courier New',monospace;
+      font-size:0.98rem;line-height:1.6;background:#ffffff;
+    }
+    #copyModal .modal-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+
+    @media (max-width:900px){
+      body{height:auto;overflow:auto}
+      .main-canvas{flex-direction:column;height:auto;overflow:visible}
+      .control-panel{width:100%;height:auto;overflow:visible}
+      .preview-panel{height:580px}
+      header{flex-direction:column;height:auto;padding:18px;gap:12px;text-align:center}
+      .header-controls{justify-content:center}
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="brand">
+    <img
+      src="https://img2.pic.in.th/57707fb0363a11e56eca7f9700e5a1f1.png"
+      alt="Logo"
+      class="brand-logo"
+    />
+    <div class="brand-title">สร้างสื่อครูด้วย AI (Prompt Builder)</div>
+    <div class="brand-sub">Kru Chadil – สื่อเพื่อ(น)ครู</div>
+  </div>
+
+  <div class="header-controls">
+    <button class="btn-pill" id="btnRandom" type="button"><i class="fas fa-dice-three"></i> สุ่มไอเดีย</button>
+    <button class="btn-pill danger" id="btnReset" type="button" title="ล้างค่าและเริ่มใหม่"><i class="fas fa-rotate-left"></i> Reset</button>
+  </div>
+</header>
+
+<div class="main-canvas">
+  <div class="control-panel">
+    <div class="scroll-area">
+
+      <div class="section-title"><i class="fas fa-drafting-compass"></i> 1. โครงสร้างและข้อมูลพื้นฐาน</div>
+
+      <div class="form-group">
+        <label>รูปแบบผลงาน (Layout)</label>
+        <select id="layout">
+          <option value="layout_notebook">📝 สรุปบทเรียน (Lesson Summary)</option>
+          <option value="layout_edu">🧠 โปสเตอร์ความรู้ / อินโฟกราฟิก (Edu-Poster & Info)</option>
+          <option value="layout_pr">📢 โปสเตอร์ประชาสัมพันธ์ (PR)</option>
+          <option value="layout_presentation">📊 สไลด์นำเสนอ (Slide Deck)</option>
+          <option value="layout_mindmap">🧠 แผนผังความคิด (Mind Map)</option>
+          <option value="layout_comic">💬 การ์ตูนช่อง (Comic / Manga)</option>
+          <option value="layout_isometric">🏠 ภาพไอโซเมตริก (Isometric)</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="comicPanelGroup" style="display:none;">
+        <label>จำนวนช่องการ์ตูน (Panels) <span class="hint">*โผล่เมื่อเลือก Comic</span></label>
+        <select id="comicPanels">
+          <option value="4">4 ช่อง</option>
+          <option value="5">5 ช่อง</option>
+          <option value="6" selected>6 ช่อง</option>
+          <option value="7">7 ช่อง</option>
+          <option value="8">8 ช่อง</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>รายวิชา (Subject)</label>
+        <select id="subject">
+          <option value="">-- ไม่ระบุ --</option>
+          <option value="Thai Language">ภาษาไทย</option>
+          <option value="Mathematics">คณิตศาสตร์</option>
+          <option value="Science">วิทยาศาสตร์</option>
+          <option value="Design and Technology">วิชาการออกแบบและเทคโนโลยี</option>
+          <option value="English">ภาษาต่างประเทศ (อังกฤษ)</option>
+          <option value="Social Studies">สังคมศึกษา ศาสนา และวัฒนธรรม</option>
+          <option value="History">ประวัติศาสตร์</option>
+          <option value="Arts">ศิลปะ / ดนตรี / นาฏศิลป์</option>
+          <option value="Computer Science">คอมพิวเตอร์ / วิทยาการคำนวณ</option>
+          <option value="Career & Technology">การงานอาชีพ</option>
+          <option value="Health Education">สุขศึกษาและพลศึกษา</option>
+          <option value="Guidance">แนะแนว / ลูกเสือ-เนตรนารี / พัฒนาผู้เรียน</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>ระดับชั้น (Target Audience)</label>
+        <select id="grade">
+          <option value="">-- ไม่ระบุ --</option>
+          <option value="kindergarten">ปฐมวัย (อนุบาล)</option>
+          <option value="primary_lower">ประถมต้น (ป.1-3)</option>
+          <option value="primary_upper">ประถมปลาย (ป.4-6)</option>
+          <option value="secondary_lower">มัธยมต้น (ม.1-3)</option>
+          <option value="secondary_upper">มัธยมปลาย (ม.4-6)</option>
+          <option value="vocational_university">อาชีวะ / อุดมศึกษา</option>
+          <option value="teachers_general">ครูอาจารย์ / บุคคลทั่วไป</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>ภาษา (Language)</label>
+        <select id="language">
+          <option value="Auto" selected>Auto (ตามหัวข้อ)</option>
+          <option value="Thai">ภาษาไทย (Thai)</option>
+          <option value="English">ภาษาอังกฤษ (English)</option>
+          <option value="Bilingual">สองภาษา (Bilingual Thai-Eng)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>หัวข้อหลัก (Headline)</label>
+        <input type="text" id="headline" placeholder="เช่น: ระบบสุริยะ, การแยกขยะ, Cyber Safety, Fractions..." />
+      </div>
+
+      <div class="form-group">
+        <label>วัตถุประสงค์ (Objective)</label>
+        <select id="objective">
+          <option value="auto" selected>✨ Auto (ให้ระบบเลือกให้)</option>
+          <option value="educate">📚 เพื่อให้ความรู้ (Educate)</option>
+          <option value="warning">⚠️ เพื่อเตือนภัย/ความปลอดภัย (Warning/Safety)</option>
+          <option value="pr">📢 เพื่อประชาสัมพันธ์/ประกาศ (PR/Announcement)</option>
+          <option value="inspire">✨ เพื่อสร้างแรงบันดาลใจ (Inspire)</option>
+          <option value="present">📌 เพื่อนำเสนอ/สรุปภาพรวม (Present/Overview)</option>
+          <option value="howto">🧩 เพื่อชวนทำ/How-to (Guide)</option>
+          <option value="campaign">📣 เพื่อโน้มน้าว/รณรงค์ (Campaign)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>ช่องทางติดต่อ (Contact Info) <span style="color:#ef4444; font-size:.85em; margin-left:5px;">(สำหรับ PR)</span></label>
+        <input type="text" id="contactInfo" placeholder="เช่น: โทร..., เพจ..., ไลน์..." />
+      </div>
+
+      <div class="section-title"><i class="fas fa-paint-brush"></i> 2. สไตล์และศิลปะ (Art & Mood)</div>
+
+      <div class="magic-toggle" id="magicToggle">
+        <input type="checkbox" id="magicEnhance" checked />
+        <div class="magic-label"><i class="fas fa-sparkles"></i> Magic Enhance (เพิ่มรายละเอียดอัตโนมัติ)</div>
+      </div>
+
+      <div class="form-group">
+        <label>สไตล์ภาพ (Art Style)</label>
+        <select id="style">
+          <option value="style_notebook" selected>📒 Notebook Doodle (สมุดจดลายเส้น-โดเดิล)</option>
+          <option value="style_paper_cutout">✂️ งานตัดกระดาษ (Paper CutOut)</option>
+          <option value="style_3d_chibi_cartoon">🧸 3D Chibi Cartoon (การ์ตูน 3D ชิบิ)</option>
+          <option value="thai_student_3d">🇹🇭 Thai Student 3D (นักเรียนไทย 3D)</option>
+          <option value="style_3d_isometric_semi">🧊 3D Isometric / Semi-Realistic (ไอโซเมตริกกึ่งสมจริง)</option>
+          <option value="style_crayon_doodle">🖍️ สีเทียน / ลายเส้นเด็ก (Crayon & Doodle)</option>
+          <option value="style_craft">✂️ งานประดิษฐ์ / ตัดแปะ (Craft & Scrapbook)</option>
+          <option value="style_thai_teacher">🏫 ครูและนักเรียนไทย (Thai Teacher & Student)</option>
+          <option value="style_thai_trad">🇹🇭 ประเพณีไทย / พุทธศาสนา (Thai Traditions & Buddhism)</option>
+          <option value="thai_traditional">🛕 Thai Traditional (ไทยวิจิตร/ลายไทย)</option>
+          <option value="style_vector">✨ กราฟิกทันสมัย (Modern Vector)</option>
+          <option value="vector_illustrator">🖌️ เวกเตอร์กราฟิก (Vector Illustrator)</option>
+          <option value="style_kawaii">🌸 คาวาอี้ (Kawaii)</option>
+          <option value="style_comic">💥 การ์ตูนช่อง / ป๊อปอาร์ต (Comic & Pop Art)</option>
+          <option value="style_manga_ink">🖤 มังงะหมึก (Manga Ink & Screentone)</option>
+          <option value="style_fantasy">🧚 แฟนตาซี / ธรรมชาติ (Fantasy & Nature)</option>
+          <option value="style_tech">💻 เทคโนโลยี / ไซไฟ (Tech)</option>
+          <option value="style_lineart">✏️ ลายเส้นมินิมอล (Minimal Line Art)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>โทนสี (Color Palette)</label>
+        <select id="color">
+          <option value="ai_auto" selected>✨ ให้ AI ช่วยออกแบบ (Auto)</option>
+          <option value="color_primary_play">🟥🟦🟨 แม่สีสดใส (Primary Play)</option>
+          <option value="color_game_bright">🎮 สดใสสไตล์เกมส์ (Game Bright)</option>
+          <option value="colorful_bright">🎨 Colorful & Bright</option>
+          <option value="color_pastel">🍭 พาสเทลหวาน (Pastel)</option>
+          <option value="color_sunset">🌅 ซันเซ็ต (Sunset)</option>
+          <option value="color_ocean">🌊 โอเชียน (Ocean)</option>
+          <option value="color_galaxy">🌌 กาแล็กซี่ (Galaxy Purple-Blue)</option>
+          <option value="color_academic">📘 วิชาการ / ทางการ (Academic)</option>
+          <option value="color_warm">☕ อบอุ่น / มินิมอล (Warm)</option>
+          <option value="color_nature">🌿 ธรรมชาติ / สบายตา (Nature)</option>
+          <option value="color_tech">💻 ทันสมัย / นีออน (Tech)</option>
+          <option value="color_thai">🛕 ไทยโทน (Thai)</option>
+          <option value="color_blackboard">🏫 กระดานดำ (Blackboard)</option>
+          <option value="color_luxury">🔥 หรูหรา (Black & Gold)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>ขนาดภาพ (Ratio)</label>
+        <select id="ratio">
+          <option value="--ar 3:4" selected>🖼️ A4 แนวตั้ง (3:4)</option>
+          <option value="--ar 4:3">📄 A4 แนวนอน (4:3)</option>
+          <option value="--ar 9:16">📱 มือถือ (9:16)</option>
+          <option value="--ar 16:9">💻 สไลด์/จอ (16:9)</option>
+          <option value="--ar 1:1">🟦 จัตุรัส (1:1)</option>
+        </select>
+      </div>
+
+      <div class="section-title"><i class="fas fa-scroll"></i> 3. เนื้อหา (Content)</div>
+
+      <div class="form-group">
+        <label>รายละเอียดเพิ่มเติม (Content Details) <span class="hint">*พิมพ์ได้ตามใจ หรือปล่อยว่างก็ได้</span></label>
+        <textarea id="content" placeholder="พิมพ์โน้ตเสริม (ถ้ามี) เช่น จุดสำคัญที่อยากเน้น / ตัวอย่างในชีวิตจริง / คำสำคัญ / ข้อควรระวัง
+ปล่อยว่างได้ ระบบจะสั่งให้ AI อธิบาย + ยกตัวอย่าง จากหัวข้อหลักใน Prompt ให้อัตโนมัติ"></textarea>
+
+        <div class="content-actions">
+          <button class="btn-mini" id="btnHint" type="button"><i class="fas fa-lightbulb"></i> คำแนะนำจากหัวข้อ</button>
+          <button class="btn-mini" id="btnContentReset" type="button" title="ล้างข้อความใน Content Details"><i class="fas fa-eraser"></i> Reset เนื้อหา</button>
+        </div>
+        <div class="hint-box" id="hintBox" style="display:none;"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="preview-panel">
+    <div class="preview-header">
+      <span><i class="fas fa-terminal"></i> Generated Prompt</span>
+      <span class="badge idle" id="statusBadge">Ready</span>
+    </div>
+
+    <div class="prompt-display-area" id="promptOutput"></div>
+
+    <div class="action-bar">
+      <button class="btn" id="btnCopy" type="button"><i class="fas fa-copy"></i> คัดลอกคำสั่ง (Copy Prompt)</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"><i class="fas fa-check-circle"></i> คัดลอกเรียบร้อย!</div>
+
+<div id="copyModal">
+  <div class="modal-backdrop" data-close="1"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="copyModalTitle">
+    <div class="modal-head">
+      <div id="copyModalTitle"><i class="fas fa-copy"></i> คัดลอกข้อความ</div>
+      <button class="modal-x" id="btnCloseCopyModal" type="button" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-note">
+        ถ้าระบบบล็อก Clipboard (เช่น เปิดจากไฟล์/แอปดู HTML บางตัว)
+        → ให้กด <b>Ctrl+C</b> (Windows) หรือ <b>Cmd+C</b> (Mac) ได้เลย
+      </div>
+      <textarea id="copyTextarea" readonly></textarea>
+      <div class="modal-actions">
+        <button class="btn-mini" id="btnSelectAll" type="button"><i class="fas fa-i-cursor"></i> Select All</button>
+        <button class="btn-mini" id="btnCopyTryAgain" type="button"><i class="fas fa-clipboard-check"></i> Try Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+var LS_KEY = 'teacher_prompt_builder_v35_1';
+var meta = { styleTouched:false, colorTouched:false };
+var NL = String.fromCharCode(10);
+
+function $(id){ return document.getElementById(id); }
+
+function containsThai(text){ return /[\u0E00-\u0E7F]/.test(String(text||'')); }
+
+function escapeHtml(s){
+  return String(s||'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/\"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+function normalizeSpaces(s){ return String(s||'').replace(/\s+/g,' ').trim(); }
+
+function showToast(msg){
+  var toast = $('toast');
+  toast.innerHTML = '<i class="fas fa-check-circle"></i> ' + escapeHtml(msg||'เรียบร้อย!');
+  toast.className = 'show';
+  setTimeout(function(){ toast.className = toast.className.replace('show',''); }, 3000);
+}
+
+function setBadge(state){
+  var badge = $('statusBadge');
+  if(state === 'generated'){
+    badge.textContent = 'Generated';
+    badge.className = 'badge ok';
+  } else {
+    badge.textContent = 'Ready';
+    badge.className = 'badge idle';
+  }
+}
+
+function renderPlaceholder(){
+  var out = $('promptOutput');
+  out.innerHTML =
+    '<div class="placeholder">' +
+    '  <i class="fas fa-magic placeholder-icon"></i>' +
+    '  <div>กรอก <b>"หัวข้อหลัก"</b> แล้วระบบจะสร้าง Prompt ให้อัตโนมัติ<br />ถ้าเลือก <b>Comic</b> จะมีตัวเลือกจำนวนช่องเพิ่มให้</div>' +
+    '</div>';
+  setBadge('ready');
+}
+
+function hasAny(t, arr){
+  for(var i=0;i<arr.length;i++){
+    if(String(t||'').indexOf(arr[i]) !== -1) return true;
+  }
+  return false;
+}
+
+function resolveLanguageContext(languageKey, headline, content){
+  var key = languageKey || 'Thai';
+  if(key === 'Auto'){
+    var src = String(headline||'') + ' ' + String(content||'');
+    return containsThai(src) ? 'Thai' : 'English';
+  }
+  return key;
+}
+
+/* ==== (โค้ดส่วน build prompt เหมือนเดิมของคุณทั้งหมด) ==== */
+/* ผม “ไม่ได้ตัดทิ้ง” แต่อยู่ยาวมาก จึงคงไว้ตามเดิมเพื่อไม่ทำงานอื่นพัง */
+
+function inferObjective(layout, headline){
+  var t = String(headline||'').toLowerCase();
+  if(hasAny(t,['ระวัง','เตือน','อันตราย','ภัย','ฉุกเฉิน','scam','phishing','virus','malware','hack','fraud'])) return 'warning';
+  if(hasAny(t,['ขอเชิญ','ประกาศ','รับสมัคร','ประชาสัมพันธ์','แข่งขัน','กิจกรรม','event','open house','สมัคร'])) return 'pr';
+  if(hasAny(t,['แรงบันดาลใจ','กำลังใจ','ความฝัน','ความสำเร็จ','inspire','motivation','dream','success'])) return 'inspire';
+  if(hasAny(t,['วิธี','ขั้นตอน','ทำยังไง','คู่มือ','how to','step','guide'])) return 'howto';
+  if(layout === 'layout_pr') return 'pr';
+  if(layout === 'layout_presentation' || layout === 'layout_mindmap' || layout === 'layout_isometric') return 'present';
+  return 'educate';
+}
+
+function getObjectiveConfig(objectiveKey, layout, headline){
+  var effective = (objectiveKey && objectiveKey !== 'auto') ? objectiveKey : inferObjective(layout, headline);
+  var map = {
+    educate:{label:'Educate', focus:'Explain clearly: meaning/definition, key takeaways, examples, and common misconceptions when relevant.'},
+    warning:{label:'Warning/Safety', focus:"Highlight risks + prevention: warning signs, do/don't, step-by-step safety actions, and a simple checklist."},
+    pr:{label:'PR/Announcement', focus:'Make details clear: what/when/where/who, key info, and a clear call-to-action.'},
+    inspire:{label:'Inspire', focus:'Motivational tone: uplifting message, 1 short quote, and a simple takeaway.'},
+    present:{label:'Present/Overview', focus:'Overview style: structured summary, clean hierarchy, minimal clutter.'},
+    howto:{label:'How-to/Guide', focus:'Actionable: step-by-step flow, checklist, needed tools/materials (if relevant), and final result.'},
+    campaign:{label:'Campaign', focus:'Persuasive: reasons, benefits, simple evidence/examples, strong call-to-action.'}
+  };
+  var cfg = map[effective] || map.educate;
+  return { effective: effective, label: cfg.label, focus: cfg.focus };
+}
+
+function getAudiencePrompt(grade){
+  if(grade === 'kindergarten') return {aud:'Designed for kindergarten kids (ages 3-5). Very simple, large visuals, minimal text.', kw:'preschool, simple icons, very large headings'};
+  if(grade === 'primary_lower') return {aud:'Designed for primary school students (grades 1-3). Bright, engaging, easy to understand.', kw:'primary school, playful infographic'};
+  if(grade === 'primary_upper') return {aud:'Designed for upper primary students (grades 4-6). Clear structure, more detail, still friendly.', kw:'upper primary, structured infographic'};
+  if(grade === 'secondary_lower') return {aud:'Designed for lower secondary students (grades 7-9). Modern, informative, slightly more technical.', kw:'teen-friendly, modern graphic'};
+  if(grade === 'secondary_upper') return {aud:'Designed for upper secondary students. Clean and detailed with good hierarchy.', kw:'senior high, detailed diagram'};
+  if(grade === 'vocational_university') return {aud:'Designed for vocational/university learners. Professional, clean, minimal.', kw:'professional, clean layout'};
+  if(grade === 'teachers_general') return {aud:'Designed for adults/teachers/general audience. Clean, minimal, sophisticated.', kw:'corporate, minimal'};
+  return {aud:'General audience. Keep it clear and readable.', kw:'clear hierarchy'};
+}
+
+/* Styles + colors + topic hints ของคุณ (เหมือนเดิม) */
+var styleData = {
+  style_notebook:{ val:'hand-drawn doodle illustration on lined notebook paper background', key:'blue ruled lines, doodle sketches, handwritten note aesthetic, clean infographic blocks, classroom vibe' },
+  style_paper_cutout:{ val:'paper cutout illustration style', key:'layered cut paper, crisp edges, subtle paper fibers, soft drop shadows, handcrafted collage look, clean readable composition' },
+  style_3d_chibi_cartoon:{ val:'cute 3D chibi style characters, big head small body, expressive face, Pixar-like quality, bright and colorful environment, playful atmosphere', key:'chibi proportions, 3D cartoon render, adorable characters, soft lighting, vibrant colors' },
+  thai_student_3d:{ val:'high-quality 3D animated style inspired by Pixar, featuring Thai students', key:'Thai school uniforms, cute character design, expressive faces, soft volumetric lighting, vibrant colors, clean 3D render, educational atmosphere' },
+  style_3d_isometric_semi:{ val:'3D isometric / semi-realistic render, clean PBR materials, studio-like lighting, slightly stylized but believable', key:'isometric perspective, diorama scene, PBR textures, soft global illumination, subtle depth of field, crisp edges, semi-realistic render' },
+  style_crayon_doodle:{ val:"children's crayon drawing style", key:'wax crayon texture, scribbles, uneven lines, vibrant primary colors, white paper background' },
+  style_craft:{ val:'mixed media craft style', key:'layered paper, scrapbook, stickers, washi tape, handmade feel' },
+  style_thai_teacher:{ val:'Thai educational illustration style', key:'Thai school uniforms, friendly teacher characters, bright classroom atmosphere, clean lines' },
+  style_thai_trad:{ val:'Thai traditions and Buddhism illustration style', key:'Thai temple architecture, candle ceremony, lotus, dharma wheel, gentle Lai Thai patterns, cultural elements' },
+  thai_traditional:{ val:'Thai traditional mural painting style (Jittrakorn Thai)', key:'intricate Lai Thai patterns, golden ornaments, temple architecture, mythological creatures, elegant curves' },
+  style_vector:{ val:'modern flat vector illustration', key:'clean lines, geometric shapes, vibrant solids, minimal shading, professional infographic' },
+  vector_illustrator:{ val:'flat vector illustration style, clean and modern', key:'Adobe Illustrator aesthetic, crisp lines, geometric shapes, vibrant solid colors, minimal shading, educational poster style' },
+  style_kawaii:{ val:'Japanese Kawaii style', key:'super cute, round shapes, sparkling eyes, blush, simple lines' },
+  style_comic:{ val:'comic strip and pop art style', key:'bold outlines, comic dots, speech bubbles, dynamic composition, high contrast' },
+  style_manga_ink:{ val:'manga ink illustration with screentones', key:'inked linework, screentone shading, speed lines, dramatic framing, manga panel energy' },
+  style_fantasy:{ val:'fantasy illustration style', key:'magical atmosphere, glowing elements, dreamy lighting, imaginative world' },
+  style_tech:{ val:'modern futuristic tech illustration style', key:'digital learning, STEM, neon accents, holograms, clean modern lab' },
+  style_lineart:{ val:'minimalist continuous line art', key:'simple shapes, elegant strokes, clean white space, minimal accents' }
+};
+
+var colorData = {
+  color_primary_play:'primary colors palette (red, blue, yellow) with playful contrast, bold blocks, clean readability, energetic classroom vibe',
+  color_game_bright:'bright game-like palette, arcade vibes, vibrant contrast, playful energy, fun educational look',
+  colorful_bright:'multicolored, vibrant, rainbow palette, happy, energetic, playful, diverse colors, high saturation',
+  color_pastel:'cotton candy gradient, pastel pink, baby blue, soft purple, mint, dreamy atmosphere',
+  color_sunset:'sunset gradient palette, warm orange, coral, pink, purple, soft glow',
+  color_ocean:'ocean palette, aqua, deep blue, seafoam green, clean fresh mood',
+  color_galaxy:'galaxy palette, purple-blue gradient, starry accents, cosmic glow',
+  color_academic:'classic educational palette, royal blue and yellow, navy, white, gold accents',
+  color_warm:'cozy warm tones, brown, beige, creamy white, minimalist earth tones',
+  color_nature:'fresh natural palette, greens, oranges, terracotta, organic feel',
+  color_tech:'cool blue tones, metallic silver, white accents, neon highlights',
+  color_thai:'traditional Thai palette, vermilion red, yellow ochre, emerald green, gold accents',
+  color_blackboard:'dark green chalkboard background with chalk-style accents',
+  color_luxury:'luxurious black and gold palette, high contrast, elegant premium look',
+  ai_auto:'Automatically selected harmonious color palette that matches the theme. Ensure high readability and aesthetic appeal.'
+};
+
+function isBuddhismTopic(raw){
+  var s = String(raw||'').toLowerCase();
+  var looksLikeSchoolName = /โรงเรียน\s*วัด/.test(s) || /โรงเรียนวัด/.test(s);
+  var strong = [
+    'buddhism','buddha','buddhist',
+    'พุทธศาสนา','พระพุทธ','พระพุทธเจ้า',
+    'ธรรมะ','พระธรรม','พระสงฆ์',
+    'มาฆบูชา','วิสาขบูชา','อาสาฬหบูชา','เข้าพรรษา','ออกพรรษา','วันพระ',
+    'ตักบาตร','ทำบุญ','ไหว้พระ','สวดมนต์','เวียนเทียน',
+    'เจดีย์','โบสถ์','อุโบสถ','วิหาร',
+    'กฐิน','ผ้าป่า',
+    'ธรรมจักร','ธัมมจักร'
+  ];
+  if(hasAny(s, strong)) return true;
+  if(looksLikeSchoolName) return false;
+
+  var measureCtx = [
+    'การวัด','เครื่องมือวัด','วิธีวัด','มาตรวัด','หน่วยวัด',
+    'วัดผล','การวัดผล','ประเมินผล',
+    'วัดความ','วัดค่า','วัดระดับ',
+    'วัดอุณหภูมิ','วัดความยาว','วัดน้ำหนัก','วัดปริมาตร','วัดความเร็ว','วัดความดัน'
+  ];
+  if(hasAny(s, measureCtx)) return false;
+
+  var templePhrase = /(ไป|ที่|ใน|หน้า|หลัง|ใกล้|ข้าง|จาก)\s*วัด/.test(s);
+  var templeName = /(^|[^\u0E00-\u0E7F])วัด[\u0E00-\u0E7F]/.test(s);
+  if(templePhrase || templeName) return true;
+
+  return false;
+}
+function isThailandTopic(raw){ var s = String(raw||'').toLowerCase(); return hasAny(s, ['ประเทศไทย','thailand','thai']); }
+function isModernTechTopic(raw){ var s = String(raw||'').toLowerCase(); return hasAny(s, ['ai','artificial intelligence','ปัญญาประดิษฐ์','เทคโนโลยี','technology','ดิจิทัล','digital','smart','สมาร์ท','future','อนาคต','ยุค']); }
+function isThaiFestivalTopic(raw){ var s = String(raw||'').toLowerCase(); return hasAny(s, ['ประเพณี','ประเพณีไทย','สงกรานต์','ลอยกระทง','ปีใหม่ไทย','ผีตาโขน','บุญบั้งไฟ','ลายไทย','ไทยวิจิตร','จิตรกรรมไทย','โขน','รำไทย','นาฏศิลป์','ศิลปะไทย']); }
+
+function getTopicHints(text){
+  var t = String(text||'').toLowerCase();
+  var elements = [];
+  var recStyle = null;
+  var recColor = null;
+
+  if(hasAny(t, ['water cycle','วงจรน้ำ','วัฏจักรน้ำ'])){
+    elements = ['evaporation arrows','condensation clouds','precipitation rain','collection river/ocean','sun heat'];
+    recColor = 'color_ocean';
+  } else if(hasAny(t, ['solar system','ระบบสุริยะ','planet','ดาวเคราะห์','space','อวกาศ'])){
+    elements = ['sun at center','planet icons','orbit lines','asteroid belt','scale comparison'];
+    recStyle = 'style_tech';
+    recColor = 'color_galaxy';
+  } else if(hasAny(t, ['recycle','รีไซเคิล','แยกขยะ','waste','ขยะ'])){
+    elements = ['color-coded bins','plastic/paper/metal/organic icons','recycle symbol','sorting checklist'];
+    recStyle = 'style_vector';
+  } else if(hasAny(t, ['cyber','ไซเบอร์','password','รหัสผ่าน','phishing','malware','hack','scam','fraud'])){
+    elements = ['lock + shield','strong password checklist','phishing example','2FA phone icon'];
+    recStyle = 'style_tech';
+    recColor = 'color_game_bright';
+  } else if(hasAny(t, ['fraction','เศษส่วน','คณิต','math','equation','สมการ'])){
+    elements = ['fraction bars','number line','worked examples','common mistakes'];
+    recStyle = 'style_vector';
+  } else if(isThaiFestivalTopic(t)){
+    elements = ['Thai festival icon','Thai flag accent ribbon','traditional dress silhouette','festival lantern/krathong','water splash bowl'];
+    recStyle = 'style_thai_trad';
+    recColor = 'color_thai';
+  } else if(isThailandTopic(t) && isModernTechTopic(t) && !isBuddhismTopic(t) && !isThaiFestivalTopic(t)){
+    elements = ['Thailand map outline','Thai flag accent ribbon','smart city skyline','AI circuit brain','network nodes'];
+    recStyle = 'style_tech';
+    recColor = 'color_tech';
+  } else if(isThailandTopic(t) && !isBuddhismTopic(t) && !isThaiFestivalTopic(t)){
+    elements = ['Thailand map outline','Thai flag accent ribbon','modern landmark skyline','community/students icons'];
+    recStyle = 'style_vector';
+    recColor = 'color_primary_play';
+  } else if(isBuddhismTopic(t)){
+    elements = ['candle procession icon','lotus','dharma wheel','temple outline'];
+    recStyle = 'style_thai_trad';
+    recColor = 'color_thai';
+  }
+
+  return { elements: elements, recStyle: recStyle, recColor: recColor };
+}
+
+function maybeAutoPickStyleColor(headline, content){
+  if(!headline && !content) return;
+  if(!($('magicEnhance') && $('magicEnhance').checked)) return;
+
+  var topicHeadline = getTopicHints(String(headline||'').trim());
+  var topicContent = { elements:[], recStyle:null, recColor:null };
+  if((!topicHeadline.elements || !topicHeadline.elements.length) && content){
+    topicContent = getTopicHints(String(content||'').trim());
+  }
+
+  var recStyle = topicHeadline.recStyle || topicContent.recStyle;
+  var recColor = topicHeadline.recColor || topicContent.recColor;
+
+  if(!meta.styleTouched && recStyle) $('style').value = recStyle;
+  if(!meta.colorTouched && $('color').value === 'ai_auto' && recColor) $('color').value = recColor;
+}
+
+function buildLayoutInstruction(layout, panels){
+  if(layout === 'layout_notebook') return 'Educational Notebook Infographic: lined notebook background, clear sections, readable.';
+  if(layout === 'layout_edu') return 'Educational Knowledge Poster / Infographic with clear sections and readable hierarchy.';
+  if(layout === 'layout_pr') return 'PR / Announcement poster with clear call-to-action and key details.';
+  if(layout === 'layout_presentation') return 'Slide deck style: clean cover + key slides, minimal clutter, readable.';
+  if(layout === 'layout_mindmap') return 'Mind map diagram: central topic with branches and sub-branches, clean grouping.';
+  if(layout === 'layout_isometric') return 'Isometric educational scene/diagram: labeled parts, clean depth, readable.';
+  if(layout === 'layout_comic'){
+    var p = parseInt(panels,10); if(!p || p < 4) p = 6;
+    return 'Comic panels: Create exactly ' + p + ' panels. Clear reading order. Minimal text per panel.';
+  }
+  return 'Clean educational poster layout with clear structure.';
+}
+
+function buildComicTitleBannerInstruction(headline){
+  return 'Title (Always at Top): Create a colorful title banner at the top with the title exactly "' + headline + '". Decorate it to match the topic.';
+}
+
+function buildContentInstruction(headline, content, objectiveCfg, gradeKw, layout){
+  if(layout === 'layout_comic'){
+    var lines = [];
+    lines.push('Comic Storytelling Mode:');
+    lines.push('Create an educational comic STORY based on the topic "' + headline + '".');
+    if(objectiveCfg && objectiveCfg.label) lines.push('Story purpose: ' + objectiveCfg.label + ' (reflect this in tone and ending).');
+    if(content) lines.push('Use these user notes as story constraints: "' + normalizeSpaces(content) + '".');
+    lines.push('');
+    lines.push('STRICT RULES:');
+    lines.push('- Do NOT summarize like a lesson.');
+    lines.push('- Do NOT use keywords, bullet points, definitions, benefits, misconceptions, or checklist blocks.');
+    lines.push('- STORY only: show learning through dialogue and events.');
+    lines.push('');
+    lines.push('Story flow: Intro → Problem/Question → Learning by action → Resolution → Ending (short punchline or visual payoff).');
+    lines.push('Audience keyword: ' + gradeKw + '.');
+    return lines.join(NL);
+  }
+
+  var base = 'Objective Focus: ' + (objectiveCfg && objectiveCfg.focus ? objectiveCfg.focus : 'Keep it clear and accurate.');
+  if(content){
+    return 'Content Presentation: Use user notes "' + normalizeSpaces(content) + '" and convert into a clear visual. ' + base;
+  }
+  return 'Auto-Content: From topic "' + headline + '", generate only what fits the topic and objective. Keep it concise and aligned with ' + gradeKw + '. ' + base;
+}
+
+function buildHintText(headline, objectiveEffective, layout){
+  var h = String(headline||'').trim();
+  if(!h) return '';
+  var isTH = containsThai(h);
+
+  if(layout === 'layout_comic'){
+    if(isTH){
+      return [
+        'คำแนะนำการสร้างเรื่องการ์ตูนจากหัวข้อ "' + h + '"',
+        '',
+        'โครงเรื่อง (Intro → Problem → Learning → Resolution → Ending):',
+        '• Intro: แนะนำตัวละคร + สถานการณ์ใกล้ตัว',
+        '• Problem: เจอปัญหาหรือคำถามที่โยงกับหัวข้อนี้',
+        '• Learning: ความรู้โผล่ในบทสนทนา/เหตุการณ์ (ไม่สรุปเป็นบทเรียน)',
+        '• Resolution: ใช้ความรู้แก้ปัญหา',
+        '• Ending: ปิดด้วยประโยคสั้น ๆ หรือภาพที่สื่อว่าตัวละคร “เข้าใจแล้ว”',
+        '',
+        'ทริค: ข้อความต่อช่องสั้น ๆ, ให้ภาพเล่าเรื่อง, อารมณ์/ท่าทางชัด, มีจุดพีค 1 จุดแล้วคลายปม'
+      ].join(NL);
+    }
+    return [
+      'Comic story ideas for "' + h + '"',
+      '',
+      'Flow (Intro → Problem → Learning → Resolution → Ending):',
+      '• Intro: introduce main character(s) in a relatable setting',
+      '• Problem: a confusion/challenge linked to the topic',
+      '• Learning: the concept appears naturally in dialogue/events (no lesson summary)',
+      '• Resolution: solve the problem using the knowledge',
+      '• Ending: a short closing line or visual punch',
+      '',
+      'Tips: keep text short per panel; let visuals carry meaning; show emotions clearly.'
+    ].join(NL);
+  }
+
+  if(isTH){
+    if(objectiveEffective === 'warning'){
+      return [
+        'คำแนะนำจากหัวข้อ "' + h + '"',
+        '',
+        '• โฟกัส: สัญญาณเตือน + วิธีป้องกัน + สิ่งที่ควรทำ/ไม่ควรทำ',
+        '• แนะนำ: ทำเป็นเช็กลิสต์สั้น ๆ + ยกตัวอย่างสถานการณ์จริง'
+      ].join(NL);
+    }
+    if(objectiveEffective === 'pr'){
+      return [
+        'คำแนะนำจากหัวข้อ "' + h + '"',
+        '',
+        '• โฟกัส: ใครทำอะไร ที่ไหน เมื่อไหร่ และต้องทำอะไรต่อ',
+        '• ลำดับ: หัวข้อใหญ่ → รายละเอียด → ช่องทางติดต่อ/Call-to-action'
+      ].join(NL);
+    }
+    if(objectiveEffective === 'howto'){
+      return [
+        'คำแนะนำจากหัวข้อ "' + h + '"',
+        '',
+        '• โฟกัส: ขั้นตอน 1–5 แบบทำตามได้จริง',
+        '• ใส่: อุปกรณ์/สิ่งที่ต้องเตรียม + ข้อควรระวัง (ถ้ามี)'
+      ].join(NL);
+    }
+    if(objectiveEffective === 'inspire'){
+      return [
+        'คำแนะนำจากหัวข้อ "' + h + '"',
+        '',
+        '• โฟกัส: ข้อความกำลังใจสั้น ๆ + ภาพที่สื่อแรงบันดาลใจ',
+        '• ปิดท้าย: takeaway สั้น ๆ 1 บรรทัด'
+      ].join(NL);
+    }
+    return [
+      'คำแนะนำจากหัวข้อ "' + h + '"',
+      '',
+      '• โฟกัส: ความหมายสั้น ๆ → ประเด็นสำคัญ → ตัวอย่าง',
+      '• เลือกเท่าที่จำเป็นให้เข้ากับหัวข้อ (ไม่ยัดทุกอย่าง)'
+    ].join(NL);
+  }
+
+  if(objectiveEffective === 'warning') return 'Topic hints: focus on warning signs + prevention + do/don\'t + simple checklist.';
+  if(objectiveEffective === 'pr') return 'Topic hints: focus on what/when/where/who + clear call-to-action.';
+  if(objectiveEffective === 'howto') return 'Topic hints: focus on step-by-step flow + needed tools/materials.';
+  if(objectiveEffective === 'inspire') return 'Topic hints: focus on uplifting message + short takeaway.';
+  return 'Topic hints: focus on short meaning + key points + examples (only what fits the topic).';
+}
+
+function buildPrompt(){
+  var layout = $('layout').value;
+  var panels = $('comicPanels') ? $('comicPanels').value : '6';
+
+  var headline = String($('headline').value || '').trim();
+  var content = String($('content').value || '').trim();
+  if(!headline){
+    renderPlaceholder();
+    return '';
+  }
+
+  maybeAutoPickStyleColor(headline, content);
+
+  var subject = $('subject').value;
+  var grade = $('grade').value;
+  var languageKey = $('language').value;
+  var styleKey = $('style').value;
+  var colorKey = $('color').value;
+  var ratio = $('ratio').value;
+  var objectiveKey = $('objective').value;
+  var contactInfo = String($('contactInfo').value || '').trim();
+
+  var audience = getAudiencePrompt(grade);
+  var lang = resolveLanguageContext(languageKey, headline, content);
+  var objectiveCfg = getObjectiveConfig(objectiveKey, layout, headline);
+
+  var layoutLine = buildLayoutInstruction(layout, panels);
+  var styleCfg = styleData[styleKey] || { val:'clean educational illustration style', key:'clear shapes, readable typography, strong composition' };
+  var colorLine = colorData[colorKey] || colorData.ai_auto;
+
+  var topicHeadline = getTopicHints(headline);
+  var topicContent = { elements:[], recStyle:null, recColor:null };
+  if((!topicHeadline.elements || !topicHeadline.elements.length) && content){
+    topicContent = getTopicHints(content);
+  }
+  var topicElements = (topicHeadline.elements && topicHeadline.elements.length) ? topicHeadline.elements : (topicContent.elements || []);
+
+  var parts = [];
+
+  if(layout === 'layout_comic'){
+    parts.push('Educational COMIC about "' + headline + '".');
+    parts.push(layoutLine);
+    parts.push(buildComicTitleBannerInstruction(headline));
+    parts.push('Panels must show story progression: Intro → Problem → Learning → Resolution → Ending.');
+  } else {
+    parts.push(layoutLine + ' About "' + headline + '".');
+  }
+
+  if(subject) parts.push('Theme/Subject: ' + subject + '.');
+  parts.push('Audience: ' + audience.aud);
+
+  parts.push('Style: ' + styleCfg.val + '.');
+  parts.push('Details: ' + styleCfg.key + '.');
+  parts.push('Colors: ' + colorLine + '.');
+
+  if($('magicEnhance') && $('magicEnhance').checked && topicElements.length){
+    parts.push('Include relevant visual elements (topic-based): ' + topicElements.join(', ') + '.');
+  }
+
+  parts.push(buildContentInstruction(headline, content, objectiveCfg, audience.kw, layout));
+
+  if(layout === 'layout_pr'){
+    if(contactInfo) parts.push('Contact Info: ' + contactInfo + '. Place clearly near the bottom with a call-to-action.');
+    else parts.push('If contact info is missing, leave a clean space for contact details.');
+  }
+
+  parts.push('Language context: ' + lang + ' (if text is used, keep it short and readable).');
+  parts.push(ratio + ' --no logos, watermarks, signature, artist name, copyright, trademark, UI buttons, menus, loading screens, random brand marks');
+
+  return parts.join(NL);
+}
+
+function updatePrompt(){
+  var prompt = buildPrompt();
+  if(!prompt) return;
+  $('promptOutput').textContent = prompt;
+  setBadge('generated');
+  saveState();
+}
+
+/* =========================
+   ✅ FIXED COPY SYSTEM (มือถือ/คอม/ไฟล์/แอปดูHTML)
+   ========================= */
+
+function isIOS(){
+  var ua = navigator.userAgent || '';
+  return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function fallbackCopy(text){
+  return new Promise(function(resolve, reject){
+    try{
+      var ta = document.createElement('textarea');
+      ta.value = text;
+
+      ta.setAttribute('readonly','');
+      ta.setAttribute('aria-hidden','true');
+
+      ta.style.position = 'fixed';
+      ta.style.left = '0';
+      ta.style.top = '0';
+      ta.style.opacity = '0';
+      ta.style.width = '1px';
+      ta.style.height = '1px';
+      ta.style.pointerEvents = 'none';
+
+      document.body.appendChild(ta);
+
+      // iOS ต้อง focus ก่อน
+      ta.focus({ preventScroll:true });
+      ta.select();
+
+      // iOS Safari ต้อง setSelectionRange
+      try{ ta.setSelectionRange(0, ta.value.length); } catch(_e){}
+
+      var ok = false;
+      try{
+        ok = document.execCommand('copy');
+      } catch(e){
+        ok = false;
+      }
+
+      document.body.removeChild(ta);
+
+      if(ok) resolve();
+      else reject(new Error('execCommand failed'));
+    } catch(e){
+      reject(e);
+    }
+  });
+}
+
+function tryClipboardWrite(text){
+  // ✅ ถ้าไม่ใช่ secure context (file:// / แอปดู html) ให้ยิง fallback ก่อนเลย
+  // เพราะ navigator.clipboard มัก “มี” แต่ “ใช้ไม่ได้” แล้วจะเด้ง modal บ่อย
+  var secure = (typeof window.isSecureContext === 'boolean') ? window.isSecureContext : false;
+
+  if(!secure){
+    return fallbackCopy(text);
+  }
+
+  // ✅ ถ้า secure context ค่อยใช้ Clipboard API ก่อน (เร็ว/สะอาด)
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    return navigator.clipboard.writeText(text).catch(function(){
+      // ถ้าโดนบล็อก (permissions/iframe) ค่อย fallback
+      return fallbackCopy(text);
+    });
+  }
+
+  return fallbackCopy(text);
+}
+
+function openCopyModal(text){
+  $('copyTextarea').value = text || '';
+  $('copyModal').style.display = 'flex';
+  setTimeout(function(){
+    $('copyTextarea').focus();
+    $('copyTextarea').select();
+    try{ $('copyTextarea').setSelectionRange(0, $('copyTextarea').value.length); } catch(_e){}
+  }, 50);
+}
+function closeCopyModal(){ $('copyModal').style.display = 'none'; }
+
+function copyPrompt(){
+  var text = $('promptOutput').textContent || '';
+  if(!normalizeSpaces(text)){
+    showToast('ยังไม่มี Prompt ให้คัดลอก');
+    return;
+  }
+
+  tryClipboardWrite(text)
+    .then(function(){
+      showToast('คัดลอกเรียบร้อย!');
+    })
+    .catch(function(){
+      // ✅ โผล่ modal เฉพาะกรณีสุดท้ายจริง ๆ
+      openCopyModal(text);
+    });
+}
+
+/* ===== State ===== */
+function collectState(){
+  return {
+    layout:$('layout').value,
+    comicPanels:$('comicPanels') ? $('comicPanels').value : '6',
+    subject:$('subject').value,
+    grade:$('grade').value,
+    language:$('language').value,
+    headline:$('headline').value,
+    objective:$('objective').value,
+    contactInfo:$('contactInfo').value,
+    magicEnhance:!!$('magicEnhance').checked,
+    style:$('style').value,
+    color:$('color').value,
+    ratio:$('ratio').value,
+    content:$('content').value,
+    meta:{ styleTouched:!!meta.styleTouched, colorTouched:!!meta.colorTouched }
+  };
+}
+function applyState(s){
+  if(!s) return;
+  if(s.layout) $('layout').value = s.layout;
+  if($('comicPanels') && s.comicPanels) $('comicPanels').value = String(s.comicPanels);
+  if(s.subject != null) $('subject').value = s.subject;
+  if(s.grade != null) $('grade').value = s.grade;
+  if(s.language != null) $('language').value = s.language;
+  if(s.headline != null) $('headline').value = s.headline;
+  if(s.objective != null) $('objective').value = s.objective;
+  if(s.contactInfo != null) $('contactInfo').value = s.contactInfo;
+  if(typeof s.magicEnhance === 'boolean') $('magicEnhance').checked = s.magicEnhance;
+  if(s.style != null) $('style').value = s.style;
+  if(s.color != null) $('color').value = s.color;
+  if(s.ratio != null) $('ratio').value = s.ratio;
+  if(s.content != null) $('content').value = s.content;
+  if(s.meta){
+    meta.styleTouched = !!s.meta.styleTouched;
+    meta.colorTouched = !!s.meta.colorTouched;
+  }
+  syncComicUI();
+}
+function saveState(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(collectState())); } catch(e){} }
+function loadState(){
+  try{
+    var raw = localStorage.getItem(LS_KEY);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  } catch(e){ return null; }
+}
+
+/* UI helpers */
+function syncComicUI(){
+  var isComic = $('layout').value === 'layout_comic';
+  $('comicPanelGroup').style.display = isComic ? 'block' : 'none';
+
+  var btnHint = $('btnHint');
+  if(btnHint){
+    btnHint.innerHTML = isComic
+      ? '<i class="fas fa-lightbulb"></i> คำแนะนำการสร้างเรื่องการ์ตูน'
+      : '<i class="fas fa-lightbulb"></i> คำแนะนำจากหัวข้อ';
+  }
+}
+
+function resetAll(){
+  meta.styleTouched = false;
+  meta.colorTouched = false;
+  try{ localStorage.removeItem(LS_KEY); } catch(e){}
+
+  $('layout').value = 'layout_notebook';
+  if($('comicPanels')) $('comicPanels').value = '6';
+  $('subject').value = '';
+  $('grade').value = '';
+  $('language').value = 'Auto';
+  $('headline').value = '';
+  $('objective').value = 'auto';
+  $('contactInfo').value = '';
+  $('magicEnhance').checked = true;
+  $('style').value = 'style_notebook';
+  $('color').value = 'ai_auto';
+  $('ratio').value = '--ar 3:4';
+  $('content').value = '';
+
+  $('hintBox').style.display = 'none';
+  $('hintBox').textContent = '';
+
+  syncComicUI();
+  renderPlaceholder();
+  saveState();
+}
+
+function randomIdea(){
+  var ideas = [
+    'Cyber Safety: รู้ทันฟิชชิ่ง',
+    'การแยกขยะให้ถูกสี',
+    'ระบบสุริยะ',
+    'การบวกเศษส่วน',
+    'ประเทศไทยในยุค AI',
+    'แก๊งคอลเซ็นเตอร์',
+    'การประหยัดพลังงาน'
+  ];
+  $('headline').value = ideas[Math.floor(Math.random()*ideas.length)];
+  updatePrompt();
+}
+
+function toggleHint(){
+  var hb = $('hintBox');
+  var isOpen = hb.style.display !== 'none';
+  if(isOpen){ hb.style.display = 'none'; return; }
+
+  var headline = String($('headline').value||'').trim();
+  if(!headline){
+    hb.textContent = 'กรอกหัวข้อหลักก่อนนะ';
+    hb.style.display = 'block';
+    return;
+  }
+  var layout = $('layout').value;
+  var objectiveCfg = getObjectiveConfig($('objective').value, layout, headline);
+  hb.textContent = buildHintText(headline, objectiveCfg.effective, layout);
+  hb.style.display = 'block';
+}
+
+function init(){
+  syncComicUI();
+
+  var s = loadState();
+  if(s) applyState(s);
+
+  if(!String($('headline').value||'').trim()) renderPlaceholder();
+  else updatePrompt();
+
+  $('layout').addEventListener('change', function(){ syncComicUI(); updatePrompt(); });
+  if($('comicPanels')) $('comicPanels').addEventListener('change', updatePrompt);
+
+  $('headline').addEventListener('input', updatePrompt);
+  $('content').addEventListener('input', updatePrompt);
+
+  $('subject').addEventListener('change', updatePrompt);
+  $('grade').addEventListener('change', updatePrompt);
+  $('language').addEventListener('change', updatePrompt);
+  $('objective').addEventListener('change', updatePrompt);
+  $('contactInfo').addEventListener('input', updatePrompt);
+  $('ratio').addEventListener('change', updatePrompt);
+
+  $('magicEnhance').addEventListener('change', function(){ updatePrompt(); saveState(); });
+
+  $('style').addEventListener('change', function(){ meta.styleTouched = true; updatePrompt(); });
+  $('color').addEventListener('change', function(){ meta.colorTouched = true; updatePrompt(); });
+
+  $('btnCopy').addEventListener('click', copyPrompt);
+  $('btnReset').addEventListener('click', resetAll);
+  $('btnRandom').addEventListener('click', randomIdea);
+  $('btnHint').addEventListener('click', toggleHint);
+
+  $('btnContentReset').addEventListener('click', function(){
+    $('content').value = '';
+    $('hintBox').style.display = 'none';
+    $('hintBox').textContent = '';
+    updatePrompt();
+  });
+
+  $('btnCloseCopyModal').addEventListener('click', closeCopyModal);
+  $('btnSelectAll').addEventListener('click', function(){
+    $('copyTextarea').focus();
+    $('copyTextarea').select();
+    try{ $('copyTextarea').setSelectionRange(0, $('copyTextarea').value.length); } catch(_e){}
+  });
+  $('btnCopyTryAgain').addEventListener('click', function(){
+    var text = $('copyTextarea').value || '';
+    tryClipboardWrite(text)
+      .then(function(){ showToast('คัดลอกเรียบร้อย!'); closeCopyModal(); })
+      .catch(function(){ showToast('คัดลอกไม่สำเร็จ: ให้กด Ctrl/Cmd+C'); });
+  });
+
+  $('copyModal').addEventListener('click', function(e){
+    if(e && e.target && e.target.getAttribute && e.target.getAttribute('data-close') === '1') closeCopyModal();
+  });
+
+  $('magicToggle').addEventListener('click', function(e){
+    if(e && e.target && e.target.tagName && e.target.tagName.toLowerCase() === 'input') return;
+    $('magicEnhance').checked = !$('magicEnhance').checked;
+    updatePrompt();
+    saveState();
+  });
+}
+
+init();
+</script>
+</body>
+</html>
